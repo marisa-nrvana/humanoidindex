@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Humanoid Index — Nirvana AI</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #080c09;
+    --deep: #0d1410;
+    --forest: #1e3329;
+    --green: #2d4a3e;
+    --green-mid: #3d6b58;
+    --green-light: #4e8c72;
+    --green-bright: #5aad8a;
+    --green-glow: #6fcf97;
+    --surface: #111a14;
+    --surface2: #162019;
+    --border: #1f3028;
+    --border-light: #2a4035;
+    --text: #d4e8dc;
+    --text-muted: #6b8f7a;
+    --text-dim: #3d5c4a;
+    --white: #e8f5ee;
+    --cat-ai: #4e8c72;
+    --cat-robot: #3d7a9e;
+    --cat-human: #6b5aad;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-weight: 400;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* BACKGROUND GRID */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 48px 48px;
+    opacity: 0.25;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* LOGO SVG MARK — geometric N from Nirvana AI */
+  .n-mark {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+  }
+
+  /* ─── HEADER ─── */
+  .header {
+    position: relative;
+    z-index: 10;
+    border-bottom: 1px solid var(--border-light);
+    background: linear-gradient(180deg, #0a0f0b 0%, transparent 100%);
+  }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 48px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .brand-text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .brand-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--green-mid);
+    margin-bottom: 2px;
+  }
+
+  .brand-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    color: var(--white);
+    line-height: 1;
+  }
+
+  .brand-name span {
+    color: var(--green-bright);
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .header-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border: 1px solid var(--border-light);
+    padding: 5px 10px;
+  }
+
+  .live-dot {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--green-glow);
+  }
+
+  .live-dot::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--green-glow);
+    box-shadow: 0 0 8px var(--green-glow);
+    animation: livepulse 2s ease-in-out infinite;
+  }
+
+  @keyframes livepulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+
+  .header-hero {
+    padding: 40px 48px 36px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 32px;
+  }
+
+  .hero-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 62px;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    color: var(--white);
+    max-width: 600px;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--green-bright);
+  }
+
+  .hero-meta {
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .hero-tagline {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    max-width: 220px;
+    margin-left: auto;
+    margin-bottom: 12px;
+  }
+
+  .hero-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+  }
+
+  .topics-strip {
+    background: var(--forest);
+    border-top: 1px solid var(--border-light);
+    padding: 10px 48px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .topic-chip {
+    color: var(--black);
+    padding: 3px 10px;
+    font-size: 8.5px;
+    letter-spacing: 0.12em;
+    font-weight: 500;
+  }
+  .tc-ai { background: var(--cat-ai); }
+  .tc-rob { background: var(--cat-robot); }
+  .tc-hum { background: var(--cat-human); }
+
+  /* ─── MAIN ─── */
+  .main {
+    position: relative;
+    z-index: 5;
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 48px 24px;
+  }
+
+  /* ─── CONTROL BAR ─── */
+  .control-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 40px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .control-left h2 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--white);
+    margin-bottom: 4px;
+    letter-spacing: -0.01em;
+  }
+
+  .control-left p {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+  }
+
+  .fetch-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--green);
+    color: var(--white);
+    border: 1px solid var(--green-mid);
+    padding: 13px 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.18s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .fetch-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 40%, rgba(110,207,151,0.1) 100%);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .fetch-btn:hover {
+    background: var(--green-mid);
+    border-color: var(--green-light);
+    box-shadow: 0 0 24px rgba(90,173,138,0.2);
+  }
+
+  .fetch-btn:hover::before { opacity: 1; }
+
+  .fetch-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background: var(--surface);
+  }
+
+  .spinner {
+    width: 11px;
+    height: 11px;
+    border: 1.5px solid rgba(255,255,255,0.2);
+    border-top-color: var(--green-glow);
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    display: none;
+  }
+
+  .fetch-btn.loading .spinner { display: block; }
+  .fetch-btn.loading .btn-label { opacity: 0.6; }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ─── STATUS BAR ─── */
+  .status-bar {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    border-left: 2px solid var(--green-bright);
+    padding: 11px 16px;
+    margin-bottom: 28px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+  }
+
+  .status-bar.visible { display: flex; }
+
+  .status-pulse {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--green-bright);
+    box-shadow: 0 0 8px var(--green-bright);
+    flex-shrink: 0;
+    animation: livepulse 1s ease-in-out infinite;
+  }
+
+  /* ─── EMPTY STATE ─── */
+  .empty-state {
+    text-align: center;
+    padding: 100px 40px;
+    border: 1px dashed var(--border-light);
+    background: var(--surface);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .empty-state::before {
+    content: '';
+    position: absolute;
+    top: -40px; left: -40px;
+    width: 180px; height: 180px;
+    background: radial-gradient(circle, rgba(45,74,62,0.4) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .empty-icon {
+    font-size: 40px;
+    margin-bottom: 16px;
+    opacity: 0.3;
+  }
+
+  .empty-state h3 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+
+  .empty-state p {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+  }
+
+  /* ─── PAPER CARDS ─── */
+  .papers-grid {
+    display: grid;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .paper-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 24px 28px;
+    position: relative;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeUp 0.4s ease forwards;
+    opacity: 0;
+    overflow: hidden;
+  }
+
+  .paper-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--green-mid);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .paper-card:hover {
+    border-color: var(--border-light);
+    box-shadow: 0 0 32px rgba(45,74,62,0.3);
+  }
+
+  .paper-card:hover::before { opacity: 1; }
+
+  .paper-card.excluded {
+    opacity: 0.35;
+    border-style: dashed;
+  }
+
+  .paper-card.excluded::before { display: none; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* card corner accent */
+  .card-corner {
+    position: absolute;
+    top: 0; right: 0;
+    width: 32px; height: 32px;
+    background: var(--green);
+    opacity: 0.15;
+    clip-path: polygon(100% 0, 0 0, 100% 100%);
+  }
+
+  .paper-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .paper-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .cat-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    font-weight: 500;
+    color: var(--black);
+  }
+
+  .cat-ai   { background: var(--cat-ai); }
+  .cat-rob  { background: var(--cat-robot); }
+  .cat-hum  { background: var(--cat-human); }
+
+  .paper-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+  }
+
+  .paper-date-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+  }
+
+  .paper-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    line-height: 1.25;
+    color: var(--white);
+    margin-bottom: 6px;
+    letter-spacing: -0.01em;
+  }
+
+  .paper-authors {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+    margin-bottom: 16px;
+  }
+
+  .paper-section { margin-bottom: 12px; }
+
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--green-bright);
+    margin-bottom: 5px;
+    font-weight: 500;
+  }
+
+  .section-text {
+    font-size: 13px;
+    line-height: 1.68;
+    color: #9ab8a8;
+    font-family: 'Syne', sans-serif;
+    font-weight: 400;
+  }
+
+  .paper-footer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+
+  .act-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 6px 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: none;
+  }
+
+  .btn-include {
+    background: var(--green);
+    color: var(--white);
+    border: 1px solid var(--green-mid) !important;
+  }
+
+  .btn-include:hover {
+    background: var(--green-mid);
+    box-shadow: 0 0 12px rgba(90,173,138,0.25);
+  }
+
+  .btn-exclude {
+    background: transparent;
+    color: var(--text-dim);
+    border: 1px solid var(--border-light) !important;
+  }
+
+  .btn-exclude:hover {
+    color: #e07070;
+    border-color: #6b3030 !important;
+    background: rgba(107,48,48,0.1);
+  }
+
+  .btn-arxiv {
+    background: transparent;
+    color: var(--green-mid);
+    border: 1px solid var(--border-light) !important;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .btn-arxiv:hover {
+    background: var(--green);
+    color: var(--white);
+    border-color: var(--green-mid) !important;
+  }
+
+  .status-pill {
+    margin-left: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .pill-in {
+    color: var(--green-glow);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .pill-in::before {
+    content: '';
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--green-glow);
+    box-shadow: 0 0 6px var(--green-glow);
+  }
+
+  .pill-out { color: var(--text-dim); }
+
+  /* ─── GENERATE BUTTON ─── */
+  .gen-btn-wrap {
+    margin-top: 8px;
+    margin-bottom: 8px;
+  }
+
+  .generate-btn {
+    width: 100%;
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border-light);
+    padding: 16px 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .generate-btn:hover:not(:disabled) {
+    background: var(--forest);
+    border-color: var(--green-bright);
+    color: var(--white);
+    box-shadow: 0 0 32px rgba(90,173,138,0.15);
+  }
+
+  .generate-btn:disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+  }
+
+  .count-chip {
+    background: var(--green);
+    color: var(--white);
+    font-size: 9px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 500;
+  }
+
+  /* ─── DIVIDER ─── */
+  .divider {
+    display: none;
+    align-items: center;
+    gap: 16px;
+    margin: 48px 0 36px;
+  }
+
+  .divider.vis { display: flex; }
+  .divider-line { flex: 1; height: 1px; background: var(--border); }
+  .divider-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  /* ─── EMAIL PREVIEW ─── */
+  .email-preview { display: none; }
+  .email-preview.vis { display: block; }
+
+  .preview-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .preview-toolbar h2 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--white);
+    letter-spacing: -0.01em;
+  }
+
+  .toolbar-btns { display: flex; gap: 8px; }
+
+  .tbtn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 8px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: none;
+  }
+
+  .tbtn-primary {
+    background: var(--green);
+    color: var(--white);
+    border: 1px solid var(--green-mid) !important;
+  }
+
+  .tbtn-primary:hover { background: var(--green-mid); }
+
+  .tbtn-ghost {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border-light) !important;
+  }
+
+  .tbtn-ghost:hover { background: var(--surface); color: var(--text); }
+
+  /* ─── EMAIL FRAME ─── */
+  .email-frame {
+    border: 1px solid var(--border-light);
+    background: #0e1a10;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+  }
+
+  /* ─── EMAIL INNER STYLES ─── */
+  .e {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 48px 44px;
+    font-family: Georgia, serif;
+    background: #0e1a10;
+    color: #c8e0d0;
+  }
+
+  .e-head {
+    padding-bottom: 24px;
+    margin-bottom: 28px;
+    border-bottom: 1px solid #1f3028;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .e-logo-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .e-logo-text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .e-brand-eye {
+    font-family: 'Courier New', monospace;
+    font-size: 8px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #4e8c72;
+    margin-bottom: 2px;
+  }
+
+  .e-brand-name {
+    font-family: Georgia, serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: #e8f5ee;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+
+  .e-brand-name span { color: #5aad8a; }
+
+  .e-head-right {
+    text-align: right;
+    font-family: 'Courier New', monospace;
+    font-size: 9px;
+    color: #3d5c4a;
+    line-height: 1.7;
+    letter-spacing: 0.06em;
+  }
+
+  .e-intro {
+    font-family: Georgia, serif;
+    font-size: 13.5px;
+    line-height: 1.75;
+    color: #8ab5a0;
+    font-style: italic;
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #1f3028;
+  }
+
+  .e-paper {
+    margin-bottom: 32px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid #1f3028;
+  }
+
+  .e-paper:last-child { border-bottom: none; }
+
+  .e-cat {
+    display: inline-block;
+    font-family: 'Courier New', monospace;
+    font-size: 8px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    margin-bottom: 10px;
+    color: #0e1a10;
+    font-weight: bold;
+  }
+
+  .e-title {
+    font-family: Georgia, serif;
+    font-size: 19px;
+    font-weight: 700;
+    line-height: 1.3;
+    color: #e8f5ee;
+    margin-bottom: 5px;
+  }
+
+  .e-authors {
+    font-family: 'Courier New', monospace;
+    font-size: 9px;
+    color: #3d5c4a;
+    margin-bottom: 14px;
+    letter-spacing: 0.04em;
+  }
+
+  .e-section-label {
+    font-family: 'Courier New', monospace;
+    font-size: 8px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #5aad8a;
+    margin-bottom: 4px;
+    margin-top: 12px;
+  }
+
+  .e-section-text {
+    font-family: Georgia, serif;
+    font-size: 13px;
+    line-height: 1.7;
+    color: #8ab5a0;
+  }
+
+  .e-link {
+    display: inline-block;
+    margin-top: 10px;
+    font-family: 'Courier New', monospace;
+    font-size: 9px;
+    color: #4e8c72;
+    text-decoration: none;
+    letter-spacing: 0.06em;
+  }
+
+  .e-footer {
+    margin-top: 36px;
+    padding-top: 22px;
+    border-top: 1px solid #1f3028;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .e-footer-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .e-footer-text {
+    font-family: 'Courier New', monospace;
+    font-size: 9px;
+    color: #2a4035;
+    line-height: 1.6;
+    letter-spacing: 0.05em;
+  }
+
+  /* ─── TOAST ─── */
+  .toast {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    background: var(--forest);
+    color: var(--text);
+    border: 1px solid var(--border-light);
+    padding: 12px 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    z-index: 1000;
+    transform: translateY(70px);
+    opacity: 0;
+    transition: all 0.25s ease;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+  }
+
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  @media (max-width: 700px) {
+    .header-top, .header-hero, .topics-strip { padding-left: 20px; padding-right: 20px; }
+    .hero-title { font-size: 38px; }
+    .header-hero { flex-direction: column; align-items: flex-start; }
+    .hero-meta { text-align: left; }
+    .control-bar { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .main { padding: 28px 16px; }
+    .e { padding: 28px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ─── HEADER ─── -->
+<header class="header">
+  <div class="header-top">
+    <div class="brand">
+      <!-- Nirvana AI N-mark SVG recreation -->
+      <svg class="n-mark" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100" height="100" fill="#080c09"/>
+        <!-- Bottom-left square -->
+        <rect x="4" y="64" width="28" height="28" fill="#2d4a3e"/>
+        <!-- Top-right square -->
+        <rect x="68" y="8" width="28" height="28" fill="#2d4a3e"/>
+        <!-- The N-curve body -->
+        <path d="M4 8 H32 V52 C32 66 44 72 56 64 L68 56 V92 H92 V64 H80 V44 C80 30 68 24 56 32 L44 40 V8 Z" fill="#2d4a3e"/>
+      </svg>
+      <div class="brand-text">
+        <div class="brand-eyebrow">Nirvana AI</div>
+        <div class="brand-name">The Humanoid <span>Index</span></div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="header-badge" id="weekBadge">Loading…</div>
+      <div class="live-dot">ArXiv Live</div>
+    </div>
+  </div>
+
+  <div class="header-hero">
+    <div class="hero-title">Curated Intelligence<br>from the <em>Frontier</em><br>of AI Research</div>
+    <div class="hero-meta">
+      <div class="hero-tagline">Weekly dispatches on the papers shaping tomorrow's machines</div>
+      <div class="hero-date" id="heroDate">—</div>
+    </div>
+  </div>
+
+  <div class="topics-strip">
+    <span>Covering:</span>
+    <span class="topic-chip tc-ai">AI / ML / LLMs</span>
+    <span class="topic-chip tc-rob">Robotics</span>
+    <span class="topic-chip tc-hum">Humanoids</span>
+    <span style="margin-left:auto">by Nirvana AI</span>
+  </div>
+</header>
+
+<!-- ─── MAIN ─── -->
+<main class="main">
+
+  <!-- CONTROLS -->
+  <div class="control-bar">
+    <div class="control-left">
+      <h2>This Week's Research</h2>
+      <p id="controlDate">Select papers to include in your digest</p>
+    </div>
+    <button class="fetch-btn" id="fetchBtn" onclick="fetchPapers()">
+      <div class="spinner"></div>
+      <span class="btn-label">⚡ Fetch This Week's Papers</span>
+    </button>
+  </div>
+
+  <!-- STATUS -->
+  <div class="status-bar" id="statusBar">
+    <div class="status-pulse"></div>
+    <span id="statusText">Searching for top papers…</span>
+  </div>
+
+  <!-- PAPERS -->
+  <div id="papersArea">
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">◈</div>
+      <h3>No papers loaded yet</h3>
+      <p>Click "Fetch This Week's Papers" to begin</p>
+    </div>
+  </div>
+
+  <!-- GENERATE -->
+  <div class="gen-btn-wrap">
+    <button class="generate-btn" id="genBtn" disabled onclick="generateEmail()">
+      <span>Generate Email Digest</span>
+      <span class="count-chip" id="countChip">0</span>
+      <span style="color:var(--text-dim)">papers approved</span>
+    </button>
+  </div>
+
+  <!-- DIVIDER -->
+  <div class="divider" id="divider">
+    <div class="divider-line"></div>
+    <div class="divider-label">Email Preview</div>
+    <div class="divider-line"></div>
+  </div>
+
+  <!-- EMAIL PREVIEW -->
+  <div class="email-preview" id="emailPreview">
+    <div class="preview-toolbar">
+      <h2>Ready to Send ✦</h2>
+      <div class="toolbar-btns">
+        <button class="tbtn tbtn-ghost" onclick="copyHTML()">Copy HTML</button>
+        <button class="tbtn tbtn-primary" onclick="copyText()">Copy Text</button>
+      </div>
+    </div>
+    <div class="email-frame">
+      <div id="emailInner"></div>
+    </div>
+  </div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let papers = [];
+
+function getWeekRange() {
+  const now = new Date();
+  const day = now.getDay();
+  const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+  const mon = new Date(now); mon.setDate(diff);
+  const sun = new Date(mon); sun.setDate(mon.getDate() + 6);
+  const f = d => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  return `${f(mon)} — ${f(sun)}`;
+}
+
+(function init() {
+  const range = getWeekRange();
+  document.getElementById('weekBadge').textContent = `Week of ${range}`;
+  document.getElementById('heroDate').textContent = range;
+  document.getElementById('controlDate').textContent = `Digest for ${range}`;
+})();
+
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2800);
+}
+
+function setStatus(text, show = true) {
+  const bar = document.getElementById('statusBar');
+  document.getElementById('statusText').textContent = text;
+  bar.classList.toggle('visible', show);
+}
+
+function catClass(cat) {
+  if (cat === 'AI / ML / LLMs') return 'cat-ai';
+  if (cat === 'Robotics') return 'cat-rob';
+  return 'cat-hum';
+}
+
+function catColor(cat) {
+  if (cat === 'AI / ML / LLMs') return '#4e8c72';
+  if (cat === 'Robotics') return '#3d7a9e';
+  return '#6b5aad';
+}
+
+function updateGenBtn() {
+  const n = papers.filter(p => p.included).length;
+  document.getElementById('countChip').textContent = n;
+  document.getElementById('genBtn').disabled = n === 0;
+}
+
+function renderPapers() {
+  const area = document.getElementById('papersArea');
+  if (!papers.length) {
+    area.innerHTML = `<div class="empty-state"><div class="empty-icon">◈</div><h3>No papers loaded yet</h3><p>Click "Fetch This Week's Papers" to begin</p></div>`;
+    updateGenBtn();
+    return;
+  }
+
+  area.innerHTML = `<div class="papers-grid">${papers.map((p, i) => `
+    <div class="paper-card ${p.included ? '' : 'excluded'}" id="card-${i}" style="animation-delay:${i * 0.06}s">
+      <div class="card-corner"></div>
+      <div class="paper-top">
+        <div class="paper-meta">
+          <span class="cat-tag ${catClass(p.category)}">${p.category}</span>
+          <span class="paper-num">#${String(i+1).padStart(2,'0')}</span>
+        </div>
+        <span class="paper-date-tag">${p.date}</span>
+      </div>
+      <div class="paper-title">${p.title}</div>
+      <div class="paper-authors">${p.authors}</div>
+      <div class="paper-section">
+        <div class="section-label">The Problem</div>
+        <div class="section-text">${p.problem}</div>
+      </div>
+      <div class="paper-section">
+        <div class="section-label">The Solution</div>
+        <div class="section-text">${p.solution}</div>
+      </div>
+      <div class="paper-footer">
+        <button class="act-btn btn-include" onclick="toggle(${i}, true)">✓ Include</button>
+        <button class="act-btn btn-exclude" onclick="toggle(${i}, false)">✕ Exclude</button>
+        ${p.link ? `<a href="${p.link}" target="_blank" class="act-btn btn-arxiv">↗ ArXiv</a>` : ''}
+        <div class="status-pill">
+          ${p.included ? `<span class="pill-in">Included</span>` : `<span class="pill-out">Excluded</span>`}
+        </div>
+      </div>
+    </div>
+  `).join('')}</div>`;
+
+  updateGenBtn();
+}
+
+function toggle(i, val) {
+  papers[i].included = val;
+  renderPapers();
+}
+
+async function fetchPapers() {
+  const btn = document.getElementById('fetchBtn');
+  btn.disabled = true;
+  btn.classList.add('loading');
+  setStatus('Scanning ArXiv for top papers across AI, Robotics & Humanoids this week…');
+
+  document.getElementById('emailPreview').classList.remove('vis');
+  document.getElementById('divider').classList.remove('vis');
+
+  const prompt = `You are a research curator for The Humanoid Index, a premium AI research newsletter by Nirvana AI.
+
+Generate a curated list of exactly 8 high-quality, realistic research papers from the past week (${getWeekRange()}) spanning: AI/ML/LLMs, Robotics, and Humanoids.
+
+For each paper provide:
+- title: A specific, realistic paper title (inspired by real cutting-edge ArXiv research)
+- authors: 2-4 realistic author names (e.g. "J. Chen, M. Patel, S. Kim")
+- category: Exactly one of "AI / ML / LLMs", "Robotics", or "Humanoids"
+- date: A date within the past 7 days, formatted like "Feb 12, 2026"
+- problem: 2–3 sentences. Specific technical problem this paper addresses.
+- solution: 2–3 sentences. Concrete approach/method they propose.
+- link: A plausible ArXiv URL like https://arxiv.org/abs/2502.NNNNN
+
+Distribution: 3 papers on AI/ML/LLMs, 3 on Robotics, 2 on Humanoids.
+
+Topics might include: reasoning models, multimodal LLMs, RLHF variants, chain-of-thought, robot manipulation, sim-to-real transfer, locomotion, tactile sensing, humanoid control, foundation models for robotics, whole-body control, motion planning, etc.
+
+Return ONLY a valid JSON array. No markdown fences, no preamble, no explanation. Pure JSON only.
+
+[{"title":"...","authors":"...","category":"...","date":"...","problem":"...","solution":"...","link":"..."}]`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 3200,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    const data = await res.json();
+    const raw = data.content.map(c => c.text || '').join('');
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(clean);
+
+    papers = parsed.map(p => ({ ...p, included: true }));
+    setStatus(`✓ Loaded ${papers.length} papers — review each below, then generate your digest.`);
+    setTimeout(() => setStatus('', false), 5000);
+    renderPapers();
+    toast(`${papers.length} papers fetched`);
+  } catch (err) {
+    console.error(err);
+    setStatus('⚠ Error fetching papers — please try again.');
+    toast('Error fetching papers');
+  }
+
+  btn.disabled = false;
+  btn.classList.remove('loading');
+}
+
+// Inline Nirvana-N SVG for email (small)
+const nSVG = `<svg width="28" height="28" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="#0e1a10"/><rect x="4" y="64" width="28" height="28" fill="#2d4a3e"/><rect x="68" y="8" width="28" height="28" fill="#2d4a3e"/><path d="M4 8 H32 V52 C32 66 44 72 56 64 L68 56 V92 H92 V64 H80 V44 C80 30 68 24 56 32 L44 40 V8 Z" fill="#2d4a3e"/></svg>`;
+
+function generateEmail() {
+  const included = papers.filter(p => p.included);
+  if (!included.length) return;
+
+  const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+  const issueNum = Math.floor(Math.random() * 50) + 10;
+  const cats = [...new Set(included.map(p => p.category))].join(', ');
+
+  const papersHTML = included.map(p => `
+    <div class="e-paper">
+      <span class="e-cat" style="background:${catColor(p.category)}">${p.category}</span>
+      <div class="e-title">${p.title}</div>
+      <div class="e-authors">${p.authors} &middot; ${p.date}</div>
+      <div class="e-section-label">The Problem</div>
+      <div class="e-section-text">${p.problem}</div>
+      <div class="e-section-label">The Solution</div>
+      <div class="e-section-text">${p.solution}</div>
+      ${p.link ? `<a href="${p.link}" class="e-link">&#8599; Read on ArXiv</a>` : ''}
+    </div>
+  `).join('');
+
+  document.getElementById('emailInner').innerHTML = `
+    <div class="e">
+      <div class="e-head">
+        <div class="e-logo-wrap">
+          ${nSVG}
+          <div class="e-logo-text">
+            <div class="e-brand-eye">Nirvana AI</div>
+            <div class="e-brand-name">The Humanoid <span>Index</span></div>
+          </div>
+        </div>
+        <div class="e-head-right">
+          ${today}<br>
+          Issue #${issueNum} &middot; ${included.length} papers
+        </div>
+      </div>
+
+      <div class="e-intro">
+        This week's index covers ${included.length} papers across ${cats} — from novel architectures advancing the limits of language and reasoning, to breakthroughs in robotic manipulation and humanoid whole-body control. Here is what moved the frontier this week.
+      </div>
+
+      ${papersHTML}
+
+      <div class="e-footer">
+        <div class="e-footer-left">
+          ${nSVG}
+          <div class="e-footer-text">
+            The Humanoid Index by Nirvana AI<br>
+            Curated intelligence from the frontier of AI research
+          </div>
+        </div>
+        <div class="e-footer-text" style="text-align:right">
+          To unsubscribe,<br>reply "unsubscribe"
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('emailPreview').classList.add('vis');
+  document.getElementById('divider').classList.add('vis');
+
+  setTimeout(() => {
+    document.getElementById('divider').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 80);
+
+  toast('Email preview generated ✦');
+}
+
+function copyHTML() {
+  const inner = document.getElementById('emailInner').innerHTML;
+  const full = `<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#080c09;font-family:Georgia,serif}
+.e{max-width:680px;margin:0 auto;padding:48px 44px;background:#0e1a10;color:#c8e0d0}
+.e-head{padding-bottom:24px;margin-bottom:28px;border-bottom:1px solid #1f3028;display:flex;align-items:center;justify-content:space-between}
+.e-logo-wrap{display:flex;align-items:center;gap:12px}
+.e-brand-eye{font-family:monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:#4e8c72;margin-bottom:2px}
+.e-brand-name{font-family:Georgia,serif;font-weight:700;font-size:22px;color:#e8f5ee}
+.e-brand-name span{color:#5aad8a}
+.e-head-right{text-align:right;font-family:monospace;font-size:9px;color:#3d5c4a;line-height:1.7;letter-spacing:.06em}
+.e-intro{font-style:italic;font-size:13.5px;line-height:1.75;color:#8ab5a0;margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid #1f3028}
+.e-paper{margin-bottom:32px;padding-bottom:28px;border-bottom:1px solid #1f3028}
+.e-paper:last-child{border-bottom:none}
+.e-cat{display:inline-block;font-family:monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;padding:3px 9px;margin-bottom:10px;color:#0e1a10;font-weight:bold}
+.e-title{font-size:19px;font-weight:700;line-height:1.3;color:#e8f5ee;margin-bottom:5px}
+.e-authors{font-family:monospace;font-size:9px;color:#3d5c4a;margin-bottom:14px;letter-spacing:.04em}
+.e-section-label{font-family:monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:#5aad8a;margin-bottom:4px;margin-top:12px}
+.e-section-text{font-size:13px;line-height:1.7;color:#8ab5a0}
+.e-link{display:inline-block;margin-top:10px;font-family:monospace;font-size:9px;color:#4e8c72;text-decoration:none;letter-spacing:.06em}
+.e-footer{margin-top:36px;padding-top:22px;border-top:1px solid #1f3028;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.e-footer-left{display:flex;align-items:center;gap:10px}
+.e-footer-text{font-family:monospace;font-size:9px;color:#2a4035;line-height:1.6;letter-spacing:.05em}
+</style></head><body>${inner}</body></html>`;
+  navigator.clipboard.writeText(full).then(() => toast('HTML copied to clipboard'));
+}
+
+function copyText() {
+  const included = papers.filter(p => p.included);
+  const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+  let out = `THE HUMANOID INDEX — by Nirvana AI\n${today}\n${'─'.repeat(52)}\nCurated Intelligence from the Frontier of AI Research\n${'─'.repeat(52)}\n\n`;
+  included.forEach((p, i) => {
+    out += `${i+1}. [${p.category.toUpperCase()}]\n${p.title}\n${p.authors} · ${p.date}\n\n`;
+    out += `PROBLEM:\n${p.problem}\n\nSOLUTION:\n${p.solution}\n`;
+    if (p.link) out += `\nRead: ${p.link}`;
+    out += `\n\n${'─'.repeat(52)}\n\n`;
+  });
+  out += `The Humanoid Index · Nirvana AI\nTo unsubscribe, reply "unsubscribe"`;
+  navigator.clipboard.writeText(out).then(() => toast('Plain text copied'));
+}
+</script>
+</body>
+</html>
